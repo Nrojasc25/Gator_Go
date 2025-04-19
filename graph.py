@@ -1,5 +1,5 @@
 class Graph:
-        def __init__(self):
+    def __init__(self):
         self.users = {} #name ,id
         self.friends = [] #list of friends
         self.destination = [] #list of destinations
