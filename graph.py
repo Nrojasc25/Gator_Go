@@ -28,3 +28,19 @@ class Graph:
         if name not in self.users or friend not in self.users:
             return False
         self.friends[self.users[name]].remove(self.users[friend])
+
+    def bfs(self, dest, date, user) -> list:
+        #destination string size int user string
+        q = []
+        visited = []
+        out = []
+        q.append(self.users[user])
+        visited.append(self.users[user])
+        while len(q) > 0:
+            cur = q.popleft()
+            for friend in self.friends[cur]:
+                if friend not in visited and friend not in out:
+                    q.append(friend)
+            if self.destination[cur] == dest and self.date[cur] == date:
+                out.append(cur)
+        return out
