@@ -1,74 +1,53 @@
 class Graph:
     def __init__(self):
-        self.users = {} #name ,id
-        self.friends = [] #list of friends
-        self.destination = [] #list of destinations
-        self.date = [] #list of dates
+        self.users = {} #name ,user
 
-    def getFriends(self, user) -> list:
-        return self.friends[self.users[user]]
+    def getFriends(self, user) -> list: #returns friends list of user
+        return self.users[user].getFriends()
 
-    def getDestination(self, user):
-        return self.destination[self.users[user]]
+    def getDestination(self, user): #returns destination of user
+        return self.users[user].getDestination()
 
-    def getDate(self, user):
-        return self.date[self.users[user]]
+    def getDate(self, user): #returns date of user
+        return self.users[user].getDate()
 
-    def insert(self, name, friends, destination, date):
-        if name not in self.users: #check if user is already in system
-            self.users[name] = len(self.users)
-            for friend in friends:
-                if friend not in self.users:
-                    self.users[friend] = len(self.users)
-                    self.friends[self.users[name]].append(self.users[friend])
-            self.friends.append(friends)
-            self.destination.append(destination)
-            self.date.append(date)
+    def insert(self, username, friends, destination, date, id): #insert function for new user
+        if username not in self.users: #check if user is already in system
+            newUser = User(username, friends, destination, date, id)
+            self.users[username] = newUser
 
-    def addFriend(self, name, friend) -> bool:
-        if name not in self.users:
-            return False
-        if friend not in self.users:
-            self.users[friend] = len(self.users)
-        self.friends[self.users[name]].append(self.users[friend]);
-        return True
-
-    def removeFriend(self, name, friend) -> bool:
+    def addFriend(self, name, friend) -> bool: #adds a friend to a user
         if name not in self.users or friend not in self.users:
             return False
-        self.friends[self.users[name]].remove(self.users[friend])
+        return self.users[name].addFriend(friend)
 
-    def bfs(self, dest, date, user) -> list:
-        #destination string size int user string
+
+    def removeFriend(self, name, friend) -> bool: #removes a friend
+        if name not in self.users or friend not in self.users:
+            return False
+        return self.users[name].removeFriend(friend)
+
+
+    def bfs(self, dest, date, user, n) -> list: #currentl searches all users in a dataset
+        #dest - destination to be visited
+        #date - intended date of travel, needs to be datetime object
+        #if not run datetime.strptime(str(date), "%Y%m%d").date() before passing
+        #it turns the yyyymmdd int into a datetime object
+        #user - user who is traveling
+        #n - int indicating how fat from date of travel you can go
         q = []
         visited = set()
         out = []
+        low, high = (date - timedelta(days=n), date + timedelta(days=n))
         q.append(self.users[user])
-        visited.add(self.users[user])
 
-        while q:
-            cur = q.pop()
-            if cur not in visited:
-                if self.destination[cur] == dest and self.date[cur] == date:
+        while q: #loop while there are still users to be searched
+            cur = q.pop(0)
+            if cur not in visited: #check if you have already visited notde
+                visited.add(cur)
+                if cur.getDestination() == dest and low <= cur.getDate() <= high: #if destination matches and date is in range add to out
                     out.append(cur)
-                for friend in self.friends[cur]:
+                for friend in cur.getFriends(): #add friends of cur to the queue
                     if friend not in visited and friend not in out:
                         q.append(friend)
-        return out
-
-    def dfs(self, dest, date, user) -> list:
-        # destination: string, date: int, user: string
-        visited = set()
-        out = []
-        stack = [self.users[user]]
-
-        while stack:
-            cur = stack.pop()
-            if cur not in visited:
-                visited.add(cur)
-                if self.destination[cur] == dest and self.date[cur] == date:
-                    out.append(cur)
-                for friend in reversed(self.friends[cur]): #mimic stack behavior
-                    if friend not in visited and friend not in out:
-                        stack.append(friend)
         return out
