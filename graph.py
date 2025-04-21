@@ -44,3 +44,31 @@ class Graph:
             if self.destination[cur] == dest and self.date[cur] == date:
                 out.append(cur)
         return out
+    
+    def dfs(self, dest, date, user) ->list:
+        stack=[]
+        visited =set()
+        out=[]
+        start=self.users.get(user)
+        if start is None:
+            return []
+        stack.append(stack)
+
+        while stack:
+            cur=stack.pop()
+            if cur in visited:
+                continue
+            visited.add(cur)
+
+            if self.destination[cur]==dest and self.date[cur]==date:
+                out.append(cur)
+
+            for friend in self.friends[cur]:
+                if friend not in visited:
+                    stack.append(friend)
+                    
+
+        return out
+
+
+        
