@@ -36,15 +36,17 @@ class Graph:
         low, high = (date - timedelta(days=n), date + timedelta(days=n))
         q.append(self.users[user])
 
-        while q: #loop while there are still users to be searched
+        while q:
             cur = q.pop(0)
-            if cur not in visited: #check if you have already visited notde
+            if cur not in visited:
                 visited.add(cur)
-                if cur.getDestination() == dest and low <= cur.getDate() <= high: #if destination matches and date is in range add to out
-                    out.append(cur)
-                for friend in cur.getFriends(): #add friends of cur to the queue
+                if cur.getDestination() == dest and low <= cur.getDate() <= high:
+                    out.append(cur.getUsername())
+                for friend in cur.getFriends():
                     if friend not in visited and friend not in out:
-                        q.append(friend)
+                        q.append(self.users[friend])
+
+        out.remove(user)
         return out
 
     # # returns list of friend usernames that have same dest and similar date (+-2 days)
