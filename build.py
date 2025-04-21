@@ -1,14 +1,12 @@
 import pandas as pd
 from graph import Graph
 
-# this doesn't work.
 def displayMenu(username):
     print("---------------------")
     print("\nHello " + username+"!")
     print("\nMenu:")
     print("1. View Account   2. Search Friends   3. Log Out   4. Exit Program\n")
     return input("\nPlease select a choice from the main menu: ")
-
 
 def login():
     print("Welcome to GatorGo!")
@@ -42,7 +40,6 @@ column_data = df['column header']
 Access a specific row (by index)
 row_data = df.iloc[index]         
 '''
-
 
 # SETUP FOR READING THE FILE
 

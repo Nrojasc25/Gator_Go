@@ -1,7 +1,7 @@
 import pygame
 import sys
 from graph import *
-from app import *
+from build import *
 from constants import *
 
 def login():

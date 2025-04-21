@@ -1,0 +1,36 @@
+from datetime import datetime
+
+class user:
+    def __init__(self, username, friends, destination, date, id):
+        self.username = username
+        self.friends = friends
+        self.destination = destination
+        self.date = date 
+        self.id = id
+
+    def getFriends(self) -> list: #returns friends list
+        return self.friends
+
+    def getDestination(self): #returns destination
+        return self.destination
+
+    def getDate(self): #returns date of travel
+        return self.date
+    
+    def getFormattedDate(self):
+        return datetime.strptime(str(self.date), "%Y/%m/%d").date() #date format: YYYY/MM/DD        
+
+    def getID(self):  #returns user ID
+        return self.id
+
+    def addFriend(self, friend) -> bool: #adds friend into friend list
+        if friend not in self.friends:
+            self.friends.append(friend)
+            return True
+        return False
+
+    def removeFriend(self, friend) -> bool: #removes friend from friends list
+        if friend not in self.friends:
+            return False
+        self.friends.remove(friend)
+        return True

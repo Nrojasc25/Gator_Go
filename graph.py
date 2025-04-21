@@ -1,104 +1,97 @@
+from datetime import timedelta
+from User import user
+
 class Graph:
     def __init__(self):
-        # this won't work. Other class for User??
-        self.users = {} #name ,id 
-        self.friends = [] #list of friends 
-        self.destination = [] #list of destinations 
-        self.date = [] #list of dates 
+        self.users = {} #username, user
+
+    def insert(self, username, friends, destination, date, id): #insert function for new user
+        if username not in self.users: #check if user is already in system
+            newUser = user(username, friends, destination, date, id)
+            self.users[username] = newUser
+
+    def getFriends(self, username) -> list: #returns friends list of user
+        return self.users[username].getFriends()
     
-    # insert(userID, userName, destination travelDate)
-    def insert(self, name, friends, destination, date):
-        if name not in self.users: #check if user is already in system
-            self.users[name] = len(self.users)
-            for friend in friends:
-                if friend not in self.users:
-                    self.users[friend] = len(self.users)
-                    self.friends[self.users[name]].append(self.users[friend])
-            self.friends.append(friends)
-            self.destination.append(destination)
-            self.date.append(date)
-
-    # user, friend
-    def addFriend(self, name, friend) -> bool: #undirected graph
-        if name not in self.users:
-            return False
-        if friend not in self.users:
-            self.users[friend] = len(self.users)
-        self.friends[self.users[name]].append(self.users[friend]);
-        return True
-
-    def removeFriend(self, name, friend) -> bool:
-        if name not in self.users or friend not in self.users:
-            return False
-        self.friends[self.users[name]].remove(self.users[friend])
-
-    # self (unnecessary parameters dest, date, what is user??)
-    # do we need bfs/dfs?? should we compare data structure or search algorithm instead?? 
-
-    # returns list of friends by their userIDs that have same dest and similar date (+-2 days)
-    def searchFriends(self, dest, date):
-        pass
-
-    # returns number of friends that have same dest and similar date (+-2 days)
-    def searchNumFriends(self, dest, data):
-        pass
-
-    # HELPER FUNCTIONS
-
-    # returns user's user name
-    def getUserName(self, user):
-        pass
-
-    # returns user's destination 
-    def getDestination(self, user):
-        pass
+    def getDestination(self, username): #returns destination of user
+        return self.users[username].getDestination()
     
-    # returns user's date of travel
-    def getTravelDate(self, user):
-        pass
-
-    def bfs(self, dest, date, user) -> list:
-        #destination string size int user string
+    def getDate(self, username): #returns date of user
+        return self.users[username].getDate()
+    
+    # returns true if user exists
+    def searchUsername(self, username):
+        return username in self.users
+    
+    def bfs(self, dest, date, user, n) -> list: #currentl searches all users in a dataset
+        #dest - destination to be visited
+        #date - intended date of travel, needs to be datetime object
+        #if not run datetime.strptime(str(date), "%Y%m%d").date() before passing
+        #it turns the yyyymmdd int into a datetime object
+        #user - user who is traveling
+        #n - int indicating how fat from date of travel you can go
         q = []
-        visited = []
+        visited = set()
         out = []
+        low, high = (date - timedelta(days=n), date + timedelta(days=n))
         q.append(self.users[user])
-        visited.append(self.users[user])
-        while len(q) > 0:
-            cur = q.popleft()
-            for friend in self.friends[cur]:
-                if friend not in visited and friend not in out:
-                    q.append(friend)
-            if self.destination[cur] == dest and self.date[cur] == date:
-                out.append(cur)
+
+        while q: #loop while there are still users to be searched
+            cur = q.pop(0)
+            if cur not in visited: #check if you have already visited notde
+                visited.add(cur)
+                if cur.getDestination() == dest and low <= cur.getDate() <= high: #if destination matches and date is in range add to out
+                    out.append(cur)
+                for friend in cur.getFriends(): #add friends of cur to the queue
+                    if friend not in visited and friend not in out:
+                        q.append(friend)
         return out
+
+    # # returns list of friend usernames that have same dest and similar date (+-2 days)
+    # # !! change date format on user's set date so that sum works for different months.
+    # def searchFriends(self, username) -> list:
+    #     friends = self.getFriends(username)
+    #     dest = self.users[username].getDestination()
+    #     date = self.users[username].getDate()
+    #     output = []
+    #     for i in range(0, len(friends)):
+    #         if self.users[friends[i]].getDestination() == dest:
+    #             if abs(self.users[friends[i]].getDate() - date) <= 2:
+    #                 output.append(friends[i])
+    #     return output
+
+    # # returns number of friends that have same dest and similar date (+-2 days)
+    # def searchNumFriends(self, username):
+    #     return len(self.searchFriends(username)) - 1 # assuming nondirected graph
     
     def getBFSTime(self):
         pass
     
-    def dfs(self, dest, date, user):
+    def dfs(self, dest, date, user) -> list:
         pass
 
     def getDFSTime(self):
         pass
-    
-    # this won't work yet, might need to change based on restructure
-    def test(self):
-        outputList = []
-        for user in self.friends:
-            outputList.append(f"{user} -> {' '.join(self.friends[user])}")
-        return outputList
+
+    # FUTURE WORK
+
+    def addFriend(self, name, friend) -> bool: #adds a friend to a user
+        if name not in self.users or friend not in self.users:
+            return False
+        return self.users[name].addFriend(friend)
+
+    def removeFriend(self, name, friend) -> bool: #removes a friend
+        if name not in self.users or friend not in self.users:
+            return False
+        return self.users[name].removeFriend(friend)
+
     
     # FUNCTIONS FOR PROGRAM RUN
 
     def tempInsert(self, user): #testing something, remove later
         self.users[0] = user
-        
-    # returns true if user exists
-    def searchUserName(self, userName):
-        return userName in self.users.values()
     
-    def searchResults(self, user):
+    def printSearchResults(self, user):
         # from given user, return all friends that go to the same location on similar date
         # print the search times (DFS vs BFS). ?? unless we change this
         pass
