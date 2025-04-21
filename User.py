@@ -5,19 +5,22 @@ class user:
         self.username = username
         self.friends = friends
         self.destination = destination
-        self.date = datetime.strptime(str(date), "%Y%m%d").date()
+        self.date = date 
         self.id = id
 
-    def getFriends(self, user) -> list: #returns friends list
+    def getFriends(self) -> list: #returns friends list
         return self.friends
 
-    def getDestination(self, user): #returns destination
+    def getDestination(self): #returns destination
         return self.destination
 
-    def getDate(self, user): #returns date of travel
+    def getDate(self): #returns date of travel
         return self.date
+    
+    def getFormattedDate(self):
+        return datetime.strptime(str(self.date), "%Y/%m/%d").date() #date format: YYYY/MM/DD        
 
-    def getID(self, user):  #returns user ID
+    def getID(self):  #returns user ID
         return self.id
 
     def addFriend(self, friend) -> bool: #adds friend into friend list
