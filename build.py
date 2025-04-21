@@ -4,32 +4,11 @@ from graph import Graph
 # this doesn't work.
 def displayMenu(username):
     print("---------------------")
-    print("\nHello " + username)
-    print("\nMenu: \n")
-    print("1. View Account \n2. Search Friends \n3. Log Out\n")
-    print("---------------------")
-    choice = input("\nPlease select a choice from the menu: ")
+    print("\nHello " + username+"!")
+    print("\nMenu:")
+    print("1. View Account   2. Search Friends   3. Log Out   4. Exit Program\n")
+    return input("\nPlease select a choice from the main menu: ")
 
-    if choice == 1:
-        # Display User ID, User Name, Destination, Travel Date
-        # display main menu
-        print("Profile:\n")
-        print("User ID: ")
-        print("User Name: ")
-        print("Destination: ")
-        print("Travel Date: \n")
-        displayMenu(username)
-
-    elif choice == 2:
-        # display search results 
-        print("Search results:")
-
-    elif choice == 3:
-        username = login()
-
-    else:
-        print("\nPlease select a valid option.")
-        choice = displayMenu(username)
 
 def login():
     print("Welcome to GatorGo!")
@@ -37,7 +16,7 @@ def login():
     while g.searchUserName(username) == False:
         print("\nCould not find user, please try again.\n")
         g.tempInsert(username) 
-        username = input("Please enter your username: ")
+        return input("Please enter your username: ")
     return username
 
 '''
@@ -95,23 +74,25 @@ print()
 # PROGRAM RUN
 
 username = login()
-displayMenu(username)
+choice = displayMenu(username)
 
-# if choice == 1:
-#     # Display User ID, User Name, Destination, Travel Date
-#     # display main menu
-#     print("Profile:\n")
-#     print("User ID: ")
-#     print("User Name: ")
-#     print("Destination: ")
-#     print("Travel Date: \n")
-#     choice = displayMenu()
+while True:
+    if choice == '1':
+        # Display User ID, User Name, Destination, Travel Date
+        # display main menu
+        print("\nProfile:\n")
+        print("User ID: ")
+        print("User Name: ")
+        print("Destination: ")
+        print("Travel Date: \n")
+    elif choice == '2':
+        # display search results 
+        print("\nSearch results:")
+    elif choice == '3':
+        username = login()
+    elif choice == '4':
+        break
+    else:
+        print("\nPlease select a valid option.")
+    choice = displayMenu(username)
 
-# elif choice == 2:
-#     # display search results 
-#     print("Search results:")
-# elif choice == 3:
-#     username = login()
-# else:
-#     print("\nPlease select a valid option.")
-#     choice = displayMenu()
