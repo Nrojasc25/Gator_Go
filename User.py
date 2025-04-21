@@ -17,6 +17,9 @@ class user:
     def getDate(self): #returns date of travel
         return self.date
     
+    def getID(self):
+        return self.id
+    
     def getFormattedDate(self):
         return datetime.strptime(str(self.date), "%Y/%m/%d").date() #date format: YYYY/MM/DD        
 

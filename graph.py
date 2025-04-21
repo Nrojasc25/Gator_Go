@@ -5,9 +5,11 @@ class Graph:
     def __init__(self):
         self.users = {} #username, user
 
+    # when setting userID, append 0s at the beginning so they're all the same size (6 digits) 
     def insert(self, username, friends, destination, date, id): #insert function for new user
+        ID = str(id).zfill(6) # formatted leading zeros
         if username not in self.users: #check if user is already in system
-            newUser = user(username, friends, destination, date, id)
+            newUser = user(username, friends, destination, date, ID)
             self.users[username] = newUser
 
     def getFriends(self, username) -> list: #returns friends list of user
@@ -18,6 +20,13 @@ class Graph:
     
     def getDate(self, username): #returns date of user
         return self.users[username].getDate()
+    
+    def getFormattedDate(self, username):
+        unformatted = self.getDate(username)
+        return unformatted #format date to YYYY/MM/DD      
+    
+    def getID(self, username):
+        return self.users[username].getID()
     
     # returns true if user exists
     def searchUsername(self, username):
