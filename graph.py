@@ -1,15 +1,20 @@
 from datetime import timedelta
 from User import user
+import time
+from collections import deque
 
 class Graph:
     def __init__(self):
         self.users = {} #username, user
+        self.id_to_user_object = {}
 
     def insert(self, username, friends, destination, date, id): #insert function for new user
         ID = str(id).zfill(6) # formatted leading zeros
-        if username not in self.users: #check if user is already in system
+        if ID not in self.id_to_user_object: #check if user is already in system
             newUser = user(username, friends, destination, date, ID)
             self.users[username] = newUser
+            self.id_to_user_object[ID] = newUser
+
 
     def getFriends(self, username) -> list: #returns friends list of user
         return self.users[username].getFriends()
@@ -31,31 +36,40 @@ class Graph:
     def searchUsername(self, username):
         return username in self.users
     
-    def bfs(self, dest, date, user, n) -> list: #currentl searches all users in a dataset
-        #dest - destination to be visited
-        #date - intended date of travel, needs to be datetime object
-        #if not run datetime.strptime(str(date), "%Y%m%d").date() before passing
-        #it turns the yyyymmdd int into a datetime object
-        #user - user who is traveling
-        #n - int indicating how fat from date of travel you can go
-        q = []
+    def bfs(self, dest, date, user, n) -> list:
+        from datetime import datetime, timedelta
+
+        #q = []
+        q=deque()
         visited = set()
         out = []
+
         low, high = (date - timedelta(days=n), date + timedelta(days=n))
+
         q.append(self.users[user])
+        visited.add(user)
 
         while q:
-            cur = q.pop(0)
-            if cur not in visited:
-                visited.add(cur)
-                if cur.getDestination() == dest and low <= cur.getDate() <= high:
-                    out.append(cur.getUsername())
-                for friend in cur.getFriends():
-                    if friend not in visited and friend not in out:
-                        q.append(self.users[friend])
+            cur = q.popleft() #O(1) compared to pop()
+            cur_username = cur.username
+            user_date = datetime.strptime(str(cur.getDate()), "%Y%m%d").date()
 
-        out.remove(user)
-        return out
+            if cur_username != user and cur.getDestination() == dest and low <= user_date <= high:
+                out.append((cur_username, user_date))
+
+            for friend_id in cur.getFriends():
+                friend_obj = self.id_to_user_object.get(friend_id)
+                if friend_obj:
+                    friend_username = friend_obj.username
+                    if friend_username not in visited:
+                        visited.add(friend_username)
+                        q.append(friend_obj)
+
+        # Sort by date and return top `n`
+        out.sort(key=lambda x: x[1])
+        return [username for username, _ in out[:n]]
+
+
 
     # # returns list of friend usernames that have same dest and similar date (+-2 days)
     # # !! change date format on user's set date so that sum works for different months.
@@ -74,37 +88,80 @@ class Graph:
     # def searchNumFriends(self, username):
     #     return len(self.searchFriends(username)) - 1 # assuming nondirected graph
     
-    def getBFSTime(self):
-        pass
+    def getBFSTime(self, dest, date, user, n):
+        start = time.time()
+        result = self.bfs(dest, date, user, n)
+        end = time.time()
+        elapsed = end - start
+        return result, elapsed
+
     
     def dfs(self, dest, date, user, n) -> list:
         stack=[]
         visited=set()
         out=[]
         low, high= (date-timedelta(days=n), date+timedelta(days=n))
-        stack.append(self.users[users])
+        stack.append(self.users[user])
+
 
         while stack:
             cur=stack.pop()
             if cur not in visited:
                 visited.add(cur)
-                if cur.getDestination()==dest and low<=cur.getDate() <=high:
-                    out.append(cur)
-                for friend in cur.getFriends:
+                from datetime import datetime
+                user_date = datetime.strptime(str(cur.getDate()), "%Y%m%d").date()
+                if cur.username != user and cur.getDestination() == dest and low <= user_date <= high:
+                    out.append(cur.username)
+                    if len(out) >= n:
+                        break
+
+                for friend in cur.getFriends():
                     if friend not in visited and friend not in out:
-                        stack.append(friend)
+                        friend_obj = self.id_to_user_object.get(friend)
+                        if friend_obj:
+                            stack.append(friend_obj)
 
 
-        return out
 
-    def getDFSTime(self):
-        pass
+        #return out
+        out.sort(key=lambda username: datetime.strptime(str(self.getDate(username)), "%Y%m%d").date())
+        return out[:n]
+
+
+    def getDFSTime(self, dest, date, user, n):
+        start = time.time()
+        result = self.dfs(dest, date, user, n)
+        end = time.time()
+        elapsed = end - start
+        return result, elapsed
+
 
     # prints search results and time of search for BFS vs DFS
     def printSearchResults(self, user):
-        # from given user, return all friends that go to the same location on similar date
-        # print the search times (DFS vs BFS). ?? unless we change this
-        pass
+        from datetime import datetime
+
+        dest = self.getDestination(user)
+        date_int = self.getDate(user)
+        date_obj = datetime.strptime(str(date_int), "%Y%m%d").date()
+        max_results = 5  # Or make this a parameter if needed
+
+        print(f"\nSearching for friends of {user} going to {dest} around {date_obj.strftime('%Y-%m-%d')}...")
+
+        bfs_results, bfs_time = self.getBFSTime(dest, date_obj, user, max_results)
+        dfs_results, dfs_time = self.getDFSTime(dest, date_obj, user, max_results)
+
+        print("\n=== BFS Results ===")
+        for name in bfs_results:
+            travel_date = datetime.strptime(str(self.getDate(name)), "%Y%m%d").date()
+            print(f"{name} (Travel Date: {travel_date.strftime('%Y-%m-%d')})")
+        print(f"BFS Time: {bfs_time:.6f} seconds")
+
+        print("\n=== DFS Results ===")
+        for name in dfs_results:
+            travel_date = datetime.strptime(str(self.getDate(name)), "%Y%m%d").date()
+            print(f"{name} (Travel Date: {travel_date.strftime('%Y-%m-%d')})")
+        print(f"DFS Time: {dfs_time:.6f} seconds\n")
+
 
     # FUTURE WORK
 

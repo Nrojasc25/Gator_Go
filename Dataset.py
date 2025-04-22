@@ -58,7 +58,7 @@ for user_id in user_ids:
 
 df = pd.DataFrame(travel_data, columns=['User ID', 'User Name', 'Destination', 'Friends', 'Date of Travel'])
 
-df.to_excel('dataset.xlsx', index=False)
+df.to_excel('dataset_final.xlsx', index=False)
 
 print(len(df))  
 print(df.columns)

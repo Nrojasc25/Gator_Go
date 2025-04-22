@@ -8,7 +8,7 @@ class user:
         self.date = date 
         self.id = id
 
-    def getFriends(self) -> list: #returns friends list
+    def getFriends(self) -> list: #returns friends list (ids)
         return self.friends
 
     def getDestination(self): #returns destination
@@ -19,6 +19,9 @@ class user:
     
     def getID(self):
         return self.id  
+    
+    def getUsername(self):
+        return self.username
     
     
     # FUTURE WORK

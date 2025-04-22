@@ -1,5 +1,7 @@
 import pandas as pd
 from graph import Graph
+import ast
+
 
 '''
 Instructions to run on terminal: 
@@ -23,6 +25,7 @@ def login():
     while g.searchUsername(username) == False:
         print("\nIncorrect username, please try again.\n\n")
         username = input("Please enter your username: ")
+    print(g.users[username].__dict__)
     return username
 
 # SETUP FOR READING THE FILE
@@ -35,7 +38,7 @@ Access a specific row (by index)
 row_data = df.iloc[index]         
 '''
 # Set the file path and read into DataFrame (df)
-file_path = 'dataset.xlsx'
+file_path = 'dataset_final.xlsx'
 print("\nREADING PROGRAM DATA...")
 df = pd.read_excel(file_path)
 
@@ -57,11 +60,22 @@ for i in range(0, numUsers):
     id = df.iloc[i, 0] # what if i change the index for 'name'??
     username = df.iloc[i, 1]
     destination = df.iloc[i, 2]
-    friends = df.iloc[i, 3]
+    #friends = df.iloc[i, 3]
+    friends_raw = df.iloc[i, 3]
+    if isinstance(friends_raw, str):
+        try:
+            friends = ast.literal_eval(friends_raw)
+        except:
+            friends = []
+    else:
+        friends = friends_raw
+
     date = df.iloc[i, 4]
     #edit so that date is read and then written in date form instead of int format its in
 
     # insert into the graph
+    if username == "william79":
+        print(username, friends, destination, date, id)
     g.insert(username, friends, destination, date, id)
 
 # PROGRAM RUN
@@ -82,13 +96,36 @@ while True:
     elif choice == '2':
         # display search results 
         print("-----------------------------------------------------------")
-        n = input("Max Results: ")
+        n = int(input("Max Results: "))
         print("\nSearch results:")
         # if search results reaches max results, only display the usernames of friends that are going and their dates
         # else display friends' number of friends they know -> (knows _ other(s))
-        print()
-        print("BFS Search Time: ")
-        print("DFS Search Time: " + "\n")
+
+            # Get current user travel info
+        destination = g.getDestination(username)
+        int_date = g.getDate(username)
+
+        # Convert the int date (e.g. 20250801) to datetime.date object
+        from datetime import datetime
+        date_obj = datetime.strptime(str(int_date), "%Y%m%d").date()
+
+        # Run BFS and DFS
+        # Run BFS and DFS with timing
+        bfs_results, bfs_time = g.getBFSTime(destination, date_obj, username, n)
+        dfs_results, dfs_time = g.getDFSTime(destination, date_obj, username, n)
+
+
+        # Print results
+        print("\nBFS Results:")
+        for friend in bfs_results:
+            print(f"{friend} (Travel Date: {g.getDate(friend)})")
+        print(f"BFS Search Time: {bfs_time:.6f} seconds")
+
+        print("\nDFS Results:")
+        for friend in dfs_results:
+            print(f"{friend} (Travel Date: {g.getDate(friend)})")
+        print(f"DFS Search Time: {dfs_time:.6f} seconds\n")
+
     elif choice == '3':
         print("-----------------------------------------------------------")
         username = login()
