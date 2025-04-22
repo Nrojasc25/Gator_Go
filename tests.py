@@ -23,7 +23,7 @@ class TestGraph(unittest.TestCase):
 
         self.assertEqual(g.getFriends("user1"), ["user2", "user3"])
         self.assertEqual(g.getDestination("user2"), "orlando")
-        self.assertEqual(g.getDate("user3"), 20250801)
+        self.assertEqual(int(g.getDate("user3").strftime("%Y%m%d")), 20250801)
 
     # # search friends and num of friend's friends with similar travel dates and same destination
     # def test3_getFriends(self):

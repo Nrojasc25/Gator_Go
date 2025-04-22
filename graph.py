@@ -49,6 +49,8 @@ class Graph:
 
 
 
+
+
     # # returns list of friend usernames that have same dest and similar date (+-2 days)
     # # !! change date format on user's set date so that sum works for different months.
     # def searchFriends(self, username) -> list:
