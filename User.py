@@ -18,13 +18,10 @@ class user:
         return self.date
     
     def getID(self):
-        return self.id
+        return self.id  
     
-    def getFormattedDate(self):
-        return datetime.strptime(str(self.date), "%Y/%m/%d").date() #date format: YYYY/MM/DD        
-
-    def getID(self):  #returns user ID
-        return self.id
+    
+    # FUTURE WORK
 
     def addFriend(self, friend) -> bool: #adds friend into friend list
         if friend not in self.friends:
