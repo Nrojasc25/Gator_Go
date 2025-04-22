@@ -29,8 +29,14 @@ end_date = datetime(2025, 12, 31)
 user_ids = [str(i).zfill(6) for i in range(1, 100001)]
 
 user_id_to_name = {}
+nameCount = {}
 for user_id in user_ids:
     name = fake.user_name()[:20]  
+    if name not in nameCount:
+        nameCount[name] = 1
+    else:
+        name += str(nameCount[name])
+        nameCount[name]++
     user_id_to_name[user_id] = name
 
 
