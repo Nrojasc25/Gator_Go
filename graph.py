@@ -1,5 +1,5 @@
 from datetime import timedelta
-from User import user
+from user import user
 import time
 from collections import deque
 
@@ -30,6 +30,9 @@ class Graph:
     # returns true if user exists
     def searchUsername(self, username):
         return username in self.users
+    
+    def getID(self, username):
+        return self.users[username].getID()
     
     def bfs(self, dest, date, user, n) -> list:
         from datetime import datetime, timedelta
