@@ -47,6 +47,8 @@ class Graph:
                         q.append(friend)
         return out
 
+
+
     # # returns list of friend usernames that have same dest and similar date (+-2 days)
     # # !! change date format on user's set date so that sum works for different months.
     # def searchFriends(self, username) -> list:
@@ -63,6 +65,7 @@ class Graph:
     # # returns number of friends that have same dest and similar date (+-2 days)
     # def searchNumFriends(self, username):
     #     return len(self.searchFriends(username)) - 1 # assuming nondirected graph
+
     
     def getBFSTime(self):
         pass
@@ -95,3 +98,7 @@ class Graph:
         # from given user, return all friends that go to the same location on similar date
         # print the search times (DFS vs BFS). ?? unless we change this
         pass
+
+
+
+    
