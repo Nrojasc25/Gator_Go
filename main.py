@@ -25,7 +25,20 @@ def login():
     while g.searchUsername(username) == False:
         print("\nIncorrect username, please try again.\n\n")
         username = input("Please enter your username: ")
-    print(g.users[username].__dict__)
+    #print(g.users[username].__dict__)
+    user_obj = g.users[username]
+    friend_ids = user_obj.getFriends()
+    friend_usernames = [g.id_to_user_object[fid].username for fid in friend_ids if fid in g.id_to_user_object]
+
+    print("\n-----------------------------------------------------------")
+    print("Profile (Raw Data View):")
+    print(f"User ID: {user_obj.getID()}")
+    print(f"Username: {user_obj.username}")
+    print(f"Destination: {user_obj.getDestination()}")
+    print(f"Travel Date: {user_obj.getDate()}")
+    print(f"Friends (Usernames): {friend_usernames}")
+    print("-----------------------------------------------------------\n")
+
     return username
 
 # SETUP FOR READING THE FILE
@@ -94,37 +107,37 @@ while True:
         print("Destination: " + g.getDestination(username))
         print("Travel Date: " + str(g.getDate(username)) +"\n") # change to getFormattedDate
     elif choice == '2':
-        # display search results 
         print("-----------------------------------------------------------")
         n = int(input("Max Results: "))
         print("\nSearch results:")
-        # if search results reaches max results, only display the usernames of friends that are going and their dates
-        # else display friends' number of friends they know -> (knows _ other(s))
 
-            # Get current user travel info
         destination = g.getDestination(username)
         int_date = g.getDate(username)
 
-        # Convert the int date (e.g. 20250801) to datetime.date object
         from datetime import datetime
         date_obj = datetime.strptime(str(int_date), "%Y%m%d").date()
 
-        # Run BFS and DFS
-        # Run BFS and DFS with timing
         bfs_results, bfs_time = g.getBFSTime(destination, date_obj, username, n)
         dfs_results, dfs_time = g.getDFSTime(destination, date_obj, username, n)
 
-
-        # Print results
         print("\nBFS Results:")
-        for friend in bfs_results:
-            print(f"{friend} (Travel Date: {g.getDate(friend)})")
+        if len(bfs_results) == 0:
+            print("No rides found!")
+        else:
+            for friend in bfs_results:
+                travel_date = datetime.strptime(str(g.getDate(friend)), "%Y%m%d").date()
+                print(f"{friend} (Travel Date: {travel_date.strftime('%Y-%m-%d')})")
         print(f"BFS Search Time: {bfs_time:.6f} seconds")
 
         print("\nDFS Results:")
-        for friend in dfs_results:
-            print(f"{friend} (Travel Date: {g.getDate(friend)})")
+        if len(dfs_results) == 0:
+            print("No rides found!")
+        else:
+            for friend in dfs_results:
+                travel_date = datetime.strptime(str(g.getDate(friend)), "%Y%m%d").date()
+                print(f"{friend} (Travel Date: {travel_date.strftime('%Y-%m-%d')})")
         print(f"DFS Search Time: {dfs_time:.6f} seconds\n")
+
 
     elif choice == '3':
         print("-----------------------------------------------------------")
