@@ -9,6 +9,8 @@ class Graph:
         self.id_to_user_object = {}
 
     def insert(self, username, friends, destination, date, id): #insert function for new user
+        if username not in self.users: #check if user is already in system
+            newUser = user(username, friends, destination, date, id)
         ID = str(id).zfill(6) # formatted leading zeros
         if ID not in self.id_to_user_object: #check if user is already in system
             newUser = user(username, friends, destination, date, ID)
@@ -24,13 +26,6 @@ class Graph:
     
     def getDate(self, username): #returns date of user
         return self.users[username].getDate()
-    
-    def getFormattedDate(self, username):
-        unformatted = self.getDate(username)
-        return unformatted #format date to YYYY/MM/DD      
-    
-    def getID(self, username):
-        return self.users[username].getID()
     
     # returns true if user exists
     def searchUsername(self, username):
@@ -66,6 +61,8 @@ class Graph:
         out.sort(key=lambda x: abs((x[1] - date).days))
 
         return [username for username, _ in out[:n]]
+
+
 
 
 
@@ -182,3 +179,18 @@ class Graph:
         if name not in self.users or friend not in self.users:
             return False
         return self.users[name].removeFriend(friend)
+
+    
+    # FUNCTIONS FOR PROGRAM RUN
+
+    def tempInsert(self, user): #testing something, remove later
+        self.users[0] = user
+    
+    def printSearchResults(self, user):
+        # from given user, return all friends that go to the same location on similar date
+        # print the search times (DFS vs BFS). ?? unless we change this
+        pass
+
+
+
+    
