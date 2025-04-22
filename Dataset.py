@@ -35,8 +35,9 @@ for user_id in user_ids:
     if name not in nameCount:
         nameCount[name] = 1
     else:
+        original = name
         name += str(nameCount[name])
-        nameCount[name] += 1
+        nameCount[original] += 1
     user_id_to_name[user_id] = name
 
 
