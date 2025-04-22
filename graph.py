@@ -1,5 +1,5 @@
 from datetime import timedelta
-from user import user
+from User import user
 
 class Graph:
     def __init__(self):
@@ -77,8 +77,25 @@ class Graph:
     def getBFSTime(self):
         pass
     
-    def dfs(self, dest, date, user) -> list:
-        pass
+    def dfs(self, dest, date, user, n) -> list:
+        stack=[]
+        visited=set()
+        out=[]
+        low, high= (date-timedelta(days=n), date+timedelta(days=n))
+        stack.append(self.users[users])
+
+        while stack:
+            cur=stack.pop()
+            if cur not in visited:
+                visited.add(cur)
+                if cur.getDestination()==dest and low<=cur.getDate() <=high:
+                    out.append(cur)
+                for friend in cur.getFriends:
+                    if friend not in visited and friend not in out:
+                        stack.append(friend)
+
+
+        return out
 
     def getDFSTime(self):
         pass

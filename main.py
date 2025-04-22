@@ -59,6 +59,7 @@ for i in range(0, numUsers):
     destination = df.iloc[i, 2]
     friends = df.iloc[i, 3]
     date = df.iloc[i, 4]
+    #edit so that date is read and then written in date form instead of int format its in
 
     # insert into the graph
     g.insert(username, friends, destination, date, id)
