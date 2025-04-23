@@ -44,7 +44,7 @@ class Graph:
         q.append(self.users[user])
 
         while q and len(out) <= max_users: #loop while there are still users to search or until out == n
-            cur = q.pop(-1) #cur is a user object
+            cur = q.pop(0) #cur is a user object
             if cur.getUsername() not in visited: #check if already visited
                 visited.add(cur.getUsername())
                 if cur.getDestination() == dest and low <= cur.getDate() <= high:
@@ -75,7 +75,7 @@ class Graph:
         q.append(self.users[user])
 
         while q and len(out) <= max_users:  # looop while there are still users to search or until out == n
-            cur = q.pop(0)  # cur is a user object
+            cur = q.pop(-1)  # cur is a user object
             if cur.getUsername() not in visited:  # check if already visited
                 visited.add(cur.getUsername())
                 if cur.getDestination() == dest and low <= cur.getDate() <= high:
