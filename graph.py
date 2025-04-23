@@ -35,36 +35,28 @@ class Graph:
         return self.users[username].getID()
     
     def bfs(self, dest, date, user, n) -> list:
-        from datetime import datetime, timedelta
-
         visited = set()
         out = []
+        q = []
 
         # Date window for filtering
         low, high = date - timedelta(days=n), date + timedelta(days=n)
+        q.append(self.users[user])
 
-        # Get the user's direct friends
-        friends = self.getFriends(user)
+        while q and len(out) < 5: #loop while there are still users to search or until out == n
+            cur = q.pop(0) #cur is a user object
+            print(len(q))
+            if cur.getUsername() not in visited: #check if already visited
+                visited.add(cur.getUsername())
+                if cur.getDestination() == dest and low <= cur.getDate() <= high:
+                    out.append(cur.getUsername())
+                for friend in cur.getFriends():
+                    if self.id_to_user_object[friend].getUsername() not in visited:
+                        q.append(self.id_to_user_object[friend])
 
-        for friend_id in friends:
-            friend_obj = self.id_to_user_object.get(friend_id)
-            if friend_obj:
-                friend_username = friend_obj.username
-
-                if friend_username not in visited:
-                    visited.add(friend_username)
-
-                    friend_dest = friend_obj.getDestination()
-                    friend_date = datetime.strptime(str(friend_obj.getDate()), "%Y%m%d").date()
-
-                    if friend_dest == dest and low <= friend_date <= high:
-                        out.append((friend_username, friend_date))
-
-        # Sort by closest travel date to target
-        out.sort(key=lambda x: abs((x[1] - date).days))
-
-        return [username for username, _ in out[:n]]
-
+        if user in out:
+            out.remove(user)
+        return out
 
 
 
