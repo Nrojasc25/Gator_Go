@@ -108,17 +108,18 @@ while True:
         print("Travel Date: " + str(g.getDate(username)) +"\n") # change to getFormattedDate
     elif choice == '2':
         print("-----------------------------------------------------------")
-        n = int(input("Max Results: "))
+        n = int(input("Max date range: "))
+        max_users = int(int(input("Max number of users: ")))
         print("\nSearch results:")
 
         destination = g.getDestination(username)
         int_date = g.getDate(username)
 
         from datetime import datetime
-        date_obj = datetime.strptime(str(int_date), "%Y%m%d").date()
+        #date_obj = datetime.strptime(str(int_date), "%Y%m%d").date()
 
-        bfs_results, bfs_time = g.getBFSTime(destination, date_obj, username, n)
-        dfs_results, dfs_time = g.getDFSTime(destination, date_obj, username, n)
+        bfs_results, bfs_time = g.getBFSTime(destination, int_date, username, n, max_users)
+        dfs_results, dfs_time = g.getDFSTime(destination, int_date, username, n, max_users)
 
         print("\nBFS Results:")
         if len(bfs_results) == 0:

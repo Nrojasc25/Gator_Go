@@ -1,5 +1,5 @@
 from datetime import timedelta
-from user import user
+from User import user
 import time
 from collections import deque
 
@@ -34,7 +34,7 @@ class Graph:
     def getID(self, username):
         return self.users[username].getID()
     
-    def bfs(self, dest, date, user, n) -> list:
+    def bfs(self, dest, date, user, n, max_users=5) -> list:
         visited = set()
         out = []
         q = []
@@ -43,10 +43,40 @@ class Graph:
         low, high = date - timedelta(days=n), date + timedelta(days=n)
         q.append(self.users[user])
 
-        while q and len(out) < 5: #loop while there are still users to search or until out == n
-            cur = q.pop(0) #cur is a user object
-            print(len(q))
+        while q and len(out) <= max_users: #loop while there are still users to search or until out == n
+            cur = q.pop(-1) #cur is a user object
             if cur.getUsername() not in visited: #check if already visited
+                visited.add(cur.getUsername())
+                if cur.getDestination() == dest and low <= cur.getDate() <= high:
+                    out.append(cur.getUsername())
+                for friend in cur.getFriends():
+                    if self.id_to_user_object[friend].getUsername() not in visited:
+                        q.append(self.id_to_user_object[friend])
+        if user in out:
+            out.remove(user)
+        return out
+    
+    def getBFSTime(self, dest, date, user, n, max_users):
+        from time import perf_counter
+        start = perf_counter()
+        result = self.bfs(dest, date, user, n, max_users)
+        end = perf_counter()
+        elapsed = end - start
+        return result, elapsed
+
+    
+    def dfs(self, dest, date, user, n, max_users=5) -> list:
+        visited = set()
+        out = []
+        q = []
+
+        # Date window for filtering
+        low, high = date - timedelta(days=n), date + timedelta(days=n)
+        q.append(self.users[user])
+
+        while q and len(out) <= max_users:  # looop while there are still users to search or until out == n
+            cur = q.pop(0)  # cur is a user object
+            if cur.getUsername() not in visited:  # check if already visited
                 visited.add(cur.getUsername())
                 if cur.getDestination() == dest and low <= cur.getDate() <= high:
                     out.append(cur.getUsername())
@@ -58,72 +88,10 @@ class Graph:
             out.remove(user)
         return out
 
-
-
-
-
-    # # returns list of friend usernames that have same dest and similar date (+-2 days)
-    # # !! change date format on user's set date so that sum works for different months.
-    # def searchFriends(self, username) -> list:
-    #     friends = self.getFriends(username)
-    #     dest = self.users[username].getDestination()
-    #     date = self.users[username].getDate()
-    #     output = []
-    #     for i in range(0, len(friends)):
-    #         if self.users[friends[i]].getDestination() == dest:
-    #             if abs(self.users[friends[i]].getDate() - date) <= 2:
-    #                 output.append(friends[i])
-    #     return output
-
-    # # returns number of friends that have same dest and similar date (+-2 days)
-    # def searchNumFriends(self, username):
-    #     return len(self.searchFriends(username)) - 1 # assuming nondirected graph
-    
-    def getBFSTime(self, dest, date, user, n):
+    def getDFSTime(self, dest, date, user, n, max_users):
         from time import perf_counter
         start = perf_counter()
-        result = self.bfs(dest, date, user, n)
-        end = perf_counter()
-        elapsed = end - start
-        return result, elapsed
-
-    
-    def dfs(self, dest, date, user, n) -> list:
-        from datetime import datetime, timedelta
-
-        visited = set()
-        out = []
-
-        # Date window for comparison
-        low, high = date - timedelta(days=n), date + timedelta(days=n)
-
-        # Get only direct friends
-        friends = self.getFriends(user)
-
-        for friend_id in friends:
-            friend_obj = self.id_to_user_object.get(friend_id)
-            if friend_obj and friend_obj.username not in visited:
-                visited.add(friend_obj.username)
-
-                # Get friend's travel info
-                friend_dest = friend_obj.getDestination()
-                friend_date = datetime.strptime(str(friend_obj.getDate()), "%Y%m%d").date()
-
-                if friend_dest == dest and low <= friend_date <= high:
-                    out.append((friend_obj.username, friend_date))
-
-        # Sort results by date closest to the target
-        out.sort(key=lambda x: abs((x[1] - date).days))
-
-        return [username for username, _ in out[:n]]
-
-
-
-
-    def getDFSTime(self, dest, date, user, n):
-        from time import perf_counter
-        start = perf_counter()
-        result = self.dfs(dest, date, user, n)
+        result = self.dfs(dest, date, user, n, max_users)
         end = perf_counter()
         elapsed = end - start
         return result, elapsed
