@@ -70,7 +70,7 @@ for i in range(0, numUsers):
     # get User's data
 
     # dataset format: User ID (int)  User Name (str)  Destination (int)   Friends (list of str)   Date of Travel (int)
-    id = df.iloc[i, 0] # what if i change the index for 'name'??
+    id = df.iloc[i, 0] 
     username = df.iloc[i, 1]
     destination = df.iloc[i, 2]
     #friends = df.iloc[i, 3]
@@ -108,7 +108,7 @@ while True:
         print("Travel Date: " + str(g.getDate(username)) +"\n") # change to getFormattedDate
     elif choice == '2':
         print("-----------------------------------------------------------")
-        n = int(input("Max Results: "))
+        n = int(input("Choose a date frame (+- n days): "))
         print("\nSearch results:")
 
         destination = g.getDestination(username)

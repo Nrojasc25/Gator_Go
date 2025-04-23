@@ -1,3 +1,4 @@
+from datetime import datetime
 import unittest
 from graph import Graph
 
@@ -43,9 +44,11 @@ class TestGraph(unittest.TestCase):
         g.insert("user3", ["user1"], "dest", 20250804, "000003")
         g.insert("user4", ["user1", "user2"], "dest", 20250808, "000003")
 
-        date = g.users["user1"].getDate()
-        self.assertEqual(g.bfs("dest", date, "user1", 2), ["user2","user3"])
+        # d = datetime.strptime(str(20250805), "%Y%m%d").date()
+        # self.assertEqual(g.bfs("dest", d, "user1", 2), [])
         # self.assertEqual(g.dfs(), [])
+
+        self.assertEqual(g.dfs("user1", 5, 2), [])
 
 if __name__ == '__main__':
     unittest.main()

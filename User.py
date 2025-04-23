@@ -5,7 +5,7 @@ class user:
         self.username = username
         self.friends = friends
         self.destination = destination
-        self.date = date 
+        self.date = datetime.strptime(str(date), "%Y%m%d").date() 
         self.id = id
 
     def getFriends(self) -> list: #returns friends list (ids)
@@ -22,7 +22,6 @@ class user:
     
     def getUsername(self):
         return self.username
-    
     
     # FUTURE WORK
 
