@@ -125,7 +125,7 @@ while True:
             print("No rides found!")
         else:
             for friend in bfs_results:
-                travel_date = datetime.strptime(str(g.getDate(friend)), "%Y%m%d").date()
+                travel_date = datetime.strptime(str(g.getDate(friend)), "%Y-%m-%d").date()
                 print(f"{friend} (Travel Date: {travel_date.strftime('%Y-%m-%d')})")
         print(f"BFS Search Time: {bfs_time:.6f} seconds")
 
@@ -134,7 +134,7 @@ while True:
             print("No rides found!")
         else:
             for friend in dfs_results:
-                travel_date = datetime.strptime(str(g.getDate(friend)), "%Y%m%d").date()
+                travel_date = datetime.strptime(str(g.getDate(friend)), "%Y-%m-%d").date()
                 print(f"{friend} (Travel Date: {travel_date.strftime('%Y-%m-%d')})")
         print(f"DFS Search Time: {dfs_time:.6f} seconds\n")
 
