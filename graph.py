@@ -117,7 +117,7 @@ class Graph:
                 travel_date = datetime.strptime(str(g.getDate(friend)), "%Y%m%d").date()
                 print(f"{friend} (Travel Date: {travel_date.strftime('%Y-%m-%d')})")
         else:
-            print("No rides found")
+            print("No rides found.")
         print(f"BFS Search Time: {bfs_time:.6f} seconds")
 
         print("\nDFS Results:")
@@ -126,7 +126,7 @@ class Graph:
                 travel_date = datetime.strptime(str(g.getDate(friend)), "%Y%m%d").date()
                 print(f"{friend} (Travel Date: {travel_date.strftime('%Y-%m-%d')})")
         else:
-            print("No rides found!")
+            print("No rides found.")
         print(f"DFS Search Time: {dfs_time:.6f} seconds\n")
 
 
